@@ -36,7 +36,7 @@ scriptVersion="3.2.2"
 # Settings for fetcher
 ######################
 
-# This setting controls what ASCII logo is displayed. Available: Arch Linux (Old and Current Logos), Linux Mint, Ubuntu, Crunchbang, Debian, Gentoo, Mandrake/Mandriva, Slackware, SUSE, Fedora, BSD, OS X and None
+# This setting controls what ASCII logo is displayed. Available: Arch Linux (Old and Current Logos), Linux Mint, Ubuntu, Crunchbang, Debian, Gentoo, Mandrake/Mandriva, Slackware, SUSE, Fedora, BSD, Korora, OS X and None
 # distro="Linux"
 
 # This sets the information to be displayed. Available: distro, Kernel, DE, WM, Win_theme, Theme, Icons, Font, Background, ASCII. To get just the information, and not a text-art logo, you would take "ASCII" out of the below variable.
@@ -204,7 +204,7 @@ displayHelp() {
 	printf "${underline}Supported Distributions${c0}:      Arch Linux (Old and Current Logos), Linux Mint,\n"
 	printf "			      LMDE, Ubuntu, Crunchbang, Debian, Gentoo, Fedora, SolusOS,\n"
 	printf "			      Mandrake/Mandriva, Slackware, Frugalware, openSUSE, Mageia,\n"
-	printf "			      Peppermint, ParabolaGNU, Viperr, LinuxDeepin, Chakra, and FreeBSD, OpenBSD\n"
+	printf "			      Peppermint, ParabolaGNU, Viperr, Korora, LinuxDeepin, Chakra, and FreeBSD, OpenBSD\n"
 	printf "${underline}Supported Desktop Managers${c0}:   KDE, GNOME, XFCE, and LXDE, and Not Present\n"
 	printf "${underline}Supported Window Managers${c0}:    PekWM, OpenBox, FluxBox, BlackBox, Xfwm4,\n"
 	printf "			      Metacity, StumpWM, KWin, IceWM, FVWM,\n"
@@ -632,6 +632,7 @@ detectdistro () {
 		fuduntu) distro="Fuduntu" ;;
 		manjaro) distro="Manjaro" ;;
 		cygwin) distro="Cygwin" ;;
+		korora) distro="Korora" ;;
 	esac
 	[[ "$verbosity" -eq "1" ]] && verboseOut "Finding distro...found as '$distro $distro_release'"
 }
@@ -706,7 +707,7 @@ detectpkgs () {
 		'Fuduntu'|'Ubuntu'|'Mint'|'SolusOS'|'Debian'|'LMDE'|'CrunchBang'|'Peppermint'|'LinuxDeepin'|'Kali Linux'|'Trisquel'|'elementary OS') pkgs=$(dpkg --get-selections | wc -l) ;;
 		'Slackware') pkgs=$(ls -1 /var/log/packages | wc -l) ;;
 		'Gentoo'|'Sabayon'|'Funtoo') pkgs=$(ls -d /var/db/pkg/*/* | wc -l) ;;
-		'Fedora'|'openSUSE'|'Red Hat Linux'|'CentOS'|'Mandriva'|'Mandrake'|'Mageia'|'Viperr') pkgs=$(rpm -qa | wc -l) ;;
+		'Fedora'|'openSUSE'|'Red Hat Linux'|'CentOS'|'Mandriva'|'Mandrake'|'Mageia'|'Viperr'|'Korora') pkgs=$(rpm -qa | wc -l) ;;
 		'Mac OS X')
 			if [ -d "/usr/local/bin" ]; then loc_pkgs=$(echo $(ls /usr/local/bin | wc -w)); pkgs="$loc_pkgs"; fi
 
@@ -1778,7 +1779,7 @@ asciiText () {
 				c1=$(getColor 'white') # White
 				c2=$(getColor 'light blue') # Light Blue
 			fi
-			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi
+			if [ -n "${my_lcolor}" ]; then c1="${my_lcolor}"; c2="${my_lcolor}"; fi 
 			startline="0"
 			fulloutput=("$c1              __                      %s"
 "$c1          _=(SDGJT=_                 %s"
@@ -2937,6 +2938,39 @@ asciiText () {
 "${c1}        /.                     %s")
 		;;
 
+		"Korora")
+			if [[ "$no_color" != "1" ]]; then
+				c0=$(getColor 'dark grey') # Dark Grey
+				c1=$(getColor 'light purple') # Black
+			fi
+			if [ -n "${my_lcolor}" ]; then c0="${my_lcolor}"; c1="${my_lcolor}"; fi
+			startline="0"
+			fulloutput=(""
+                                      
+                                   
+"${c0}                    CCGGOOOOOOOOOOG   %s"
+"${c0}                 G00OGGCCCCCCCCCC0OC  %s"
+"${c0}               G0OCCCC          C0OC  %s"
+"${c0}              G0GCC             C0OCC %s"
+"${c0}             C0GCC              C0OCC %s"
+"${c1}           CCG0GC               ${c0}C0OCC %s"
+"${c1}       C000OGG0OO00OC           ${c0}C0GC  %s"
+"${c1}     G0OCCCCC ${c0}O0CC${c1}CG0OC        ${c0}COOCC  %s"
+"${c1}   CG0GCC      ${c0}O0GC ${c1}CO0C      ${c0}C0OCCC  %s"
+"${c1}   G0GCC        ${c0}CO0OCCO0CCCCG00GCC    %s"
+"${c1}  CO0CC            ${c0}GOOO0O00OGCCC      %s"
+"${c1}  CO0CC              ${c0}CG0GCCCC         %s"
+"${c1}  CO0CC              C0OCC            %s"
+"${c1}  CO0CC             G0OCC             %s"
+"${c1}  CO0CC          CG00GCC              %s"
+"${c1}  CO0000000000000OGCCCC               %s"
+"${c1}    CCCCCCCCCCCCCCCC                  %s"
+""
+
+)
+		;;
+
+
 
 		*)
 			if [[ "$no_color" != "1" ]]; then
@@ -3046,8 +3080,9 @@ infoDisplay () {
 		"Mint"|"LMDE"|"openSUSE"|"LinuxDeepin"|"DragonflyBSD"|"Manjaro"|"Manjaro-tree"|"Android") labelcolor=$(getColor 'light green');;
 		"Ubuntu-3color"|"FreeBSD"|"Debian"|"BSD"|"Red Hat Linux"|"Peppermint"|"Cygwin"|"Fuduntu"|"NetBSD"|"Scientific Linux"|"DragonFlyBSD"|"BackTrack Linux") labelcolor=$(getColor 'light red');;
 		"CrunchBang"|"SolusOS"|"Viperr"|"elementary"*) labelcolor=$(getColor 'dark grey');;
-		"Gentoo"|"ParabolaGNU/Linux-libre"|"Funtoo"|"Funtoo-text") labelcolor=$(getColor 'light purple');;
+		"Gentoo"|"ParabolaGNU/Linux-libre"|"Funtoo"|"Funtoo-text"|"Korora") labelcolor=$(getColor 'light purple');;
 		"CentOS"|"Ubuntu"|*) labelcolor=$(getColor 'yellow');;
+		
 	esac
 	[[ "$my_lcolor" ]] && labelcolor="${my_lcolor}"
 	if [[ "$no_color" == "1" ]]; then labelcolor=""; bold=""; c0=""; textcolor=""; fi
